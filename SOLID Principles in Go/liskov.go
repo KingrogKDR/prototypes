@@ -28,7 +28,7 @@ func PrintArea(s Shape) {
 	fmt.Printf("Area: %f\n", s.Area())
 }
 
-func main() {
+func Liskov() {
 	rect := Rect{length: 12, breadth: 6.28}
 	square := Square{side: 4}
 	PrintArea(rect)

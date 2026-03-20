@@ -1,13 +1,5 @@
-To run:
+# HOW TO RUN
 
-```zsh 
+```zsh
   go run *.go
-```
-
-
-
-
-
-```
-```
 ```

@@ -66,6 +66,34 @@ func schedule(nodes []Node, pod Pod, plugins []WeightedPlugin) Node {
 	return bestNode
 }
 
+func runScenario(title string, nodes []Node, pod Pod, plugins []WeightedPlugin) {
+	println("\n---", title, "---")
+
+	// Print detailed scoring
+	for _, node := range nodes {
+		totalScore := 0
+		println("Node:", node.name)
+
+		for _, wp := range plugins {
+			score := wp.plugin.Score(node, pod)
+			weighted := score * wp.weight
+
+			println("  Plugin:", wp.plugin.Name(),
+				"Raw:", score,
+				"Weight:", wp.weight,
+				"Weighted:", weighted)
+
+			totalScore += weighted
+		}
+
+		println("  Total Score:", totalScore)
+	}
+
+	// Use schedule function for final decision
+	best := schedule(nodes, pod, plugins)
+	println("=> Selected Node:", best.name)
+}
+
 func main() {
 	nodes := []Node{
 		{"A", 8, 2},
@@ -75,12 +103,46 @@ func main() {
 
 	pod := Pod{2}
 
-	weightedPlugins := []WeightedPlugin{
-		{&CPU{}, 14},
+	runScenario("Equal Weights",
+		nodes,
+		pod,
+		[]WeightedPlugin{
+			{&CPU{}, 1},
+			{&BalancedUsage{}, 1},
+		},
+	)
+
+	runScenario("CPU Dominates",
+		nodes,
+		pod,
+		[]WeightedPlugin{
+			{&CPU{}, 14},
+			{&BalancedUsage{}, 1},
+		},
+	)
+
+	runScenario("Balanced Usage Dominates",
+		nodes,
+		pod,
+		[]WeightedPlugin{
+			{&CPU{}, 1},
+			{&BalancedUsage{}, 10},
+		},
+	)
+
+	runScenario("Extreme Weight Bias",
+		nodes,
+		pod,
+		[]WeightedPlugin{
+			{&CPU{}, 100},
+			{&BalancedUsage{}, 1},
+		},
+	)
+
+	nodesWithEdge := append(nodes, Node{"D", 8, 8})
+
+	runScenario("Includes Fully Utilized Node", nodesWithEdge, pod, []WeightedPlugin{
+		{&CPU{}, 1},
 		{&BalancedUsage{}, 1},
-	}
-
-	best := schedule(nodes, pod, weightedPlugins)
-
-	println("Scheduled on node:", best.name)
+	})
 }

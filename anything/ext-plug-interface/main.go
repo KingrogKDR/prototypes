@@ -47,29 +47,12 @@ func (b *BalancedUsage) Score(node Node, pod Pod) int {
 	return int((1 - diff) * 100)
 }
 
-func schedule(nodes []Node, pod Pod, plugins []WeightedPlugin) Node {
-	bestScore := -1
-	var bestNode Node
-	for _, node := range nodes {
-		totalScore := 0
-		for _, wp := range plugins {
-			score := wp.plugin.Score(node, pod)
-			totalScore += score * wp.weight
-		}
-
-		if totalScore > bestScore {
-			bestScore = totalScore
-			bestNode = node
-		}
-
-	}
-	return bestNode
-}
-
 func runScenario(title string, nodes []Node, pod Pod, plugins []WeightedPlugin) {
 	println("\n---", title, "---")
 
-	// Print detailed scoring
+	bestScore := -1
+	var bestNode Node
+
 	for _, node := range nodes {
 		totalScore := 0
 		println("Node:", node.name)
@@ -87,11 +70,14 @@ func runScenario(title string, nodes []Node, pod Pod, plugins []WeightedPlugin) 
 		}
 
 		println("  Total Score:", totalScore)
+
+		if totalScore > bestScore {
+			bestScore = totalScore
+			bestNode = node
+		}
 	}
 
-	// Use schedule function for final decision
-	best := schedule(nodes, pod, plugins)
-	println("=> Selected Node:", best.name)
+	println("=> Selected Node:", bestNode.name)
 }
 
 func main() {

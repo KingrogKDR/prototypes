@@ -1,12 +1,12 @@
 # OverlayFS Lab
 
-A collection of reproducible experiments for understanding Linux OverlayFS from first principles.
+A collection of reproducible experiments that explore the behavior of Linux OverlayFS through observation and hands-on experimentation.
 
 This repository is not a tutorial on using OverlayFS.
 
-Instead, it investigates how OverlayFS behaves by observing the filesystem before and after different operations.
+Rather than explaining how to use OverlayFS, this repository investigates **why** it behaves the way it does by reproducing common scenarios and analyzing their results.
 
-## Pre-Requisites:
+## Prerequisites:
 
 We'll need:
 
@@ -29,11 +29,17 @@ nodev overlay
 
 ## Setup
 
-Clone the repository.
+This lab lives inside the `prototypes` repository. If you only want this lab locally, use Git's sparse checkout feature.
 
 ```bash
-git clone https://github.com/KingrogKDR/overlayfs-lab.git
-cd overlayfs-lab
+git clone --filter=blob:none --sparse \
+    https://github.com/KingrogKDR/prototypes.git
+
+cd prototypes
+
+git sparse-checkout set labs/overlay_fs_lab
+
+cd labs/overlay_fs_lab
 ```
 
 Create the lab environment.
@@ -42,7 +48,11 @@ Create the lab environment.
 make setup
 ```
 
-> If you require any help with the available commands, use `make help`
+Display the available commands:
+
+```bash
+make help
+```
 
 ## Cleanup
 
@@ -63,6 +73,7 @@ The experiments are designed to be completed in order.
 
 ## References
 
-- Linux Kernel OverlayFS Documentation
-- Man page: `mount(8)`
-- Man page: `stat(2)`
+- [Linux Kernel OverlayFS Documentation](https://www.kernel.org/doc/html/latest/filesystems/overlayfs.html)
+- `man 8 mount`
+- `man 2 stat`
+- `man 7 mount_namespaces`

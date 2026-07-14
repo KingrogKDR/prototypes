@@ -12,7 +12,6 @@ We'll need:
 
 - A Linux machine or VM with OverlayFS support
 - Root privileges (sudo)
-- OverlayFS support (modern Linux kernels include it)
 - `tree` command
 
 Verify OverlayFS support:
